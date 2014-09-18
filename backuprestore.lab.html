@@ -1,0 +1,2020 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.8" />
+<title>OpenStack Backup and Restore</title>
+<style type="text/css">
+/* Shared CSS for AsciiDoc xhtml11 and html5 backends */
+
+/* Default font. */
+body {
+  font-family: Georgia,serif;
+}
+
+/* Title font. */
+h1, h2, h3, h4, h5, h6,
+div.title, caption.title,
+thead, p.table.header,
+#toctitle,
+#author, #revnumber, #revdate, #revremark,
+#footer {
+  font-family: Arial,Helvetica,sans-serif;
+}
+
+body {
+  margin: 1em 5% 1em 5%;
+}
+
+a {
+  color: blue;
+  text-decoration: underline;
+}
+a:visited {
+  color: fuchsia;
+}
+
+em {
+  font-style: italic;
+  color: navy;
+}
+
+strong {
+  font-weight: bold;
+  color: #083194;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #527bbd;
+  margin-top: 1.2em;
+  margin-bottom: 0.5em;
+  line-height: 1.3;
+}
+
+h1, h2, h3 {
+  border-bottom: 2px solid silver;
+}
+h2 {
+  padding-top: 0.5em;
+}
+h3 {
+  float: left;
+}
+h3 + * {
+  clear: left;
+}
+h5 {
+  font-size: 1.0em;
+}
+
+div.sectionbody {
+  margin-left: 0;
+}
+
+hr {
+  border: 1px solid silver;
+}
+
+p {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+ul, ol, li > p {
+  margin-top: 0;
+}
+ul > li     { color: #aaa; }
+ul > li > * { color: black; }
+
+.monospaced, code, pre {
+  font-family: "Courier New", Courier, monospace;
+  font-size: inherit;
+  color: navy;
+  padding: 0;
+  margin: 0;
+}
+
+
+#author {
+  color: #527bbd;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+#email {
+}
+#revnumber, #revdate, #revremark {
+}
+
+#footer {
+  font-size: small;
+  border-top: 2px solid silver;
+  padding-top: 0.5em;
+  margin-top: 4.0em;
+}
+#footer-text {
+  float: left;
+  padding-bottom: 0.5em;
+}
+#footer-badges {
+  float: right;
+  padding-bottom: 0.5em;
+}
+
+#preamble {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+div.imageblock, div.exampleblock, div.verseblock,
+div.quoteblock, div.literalblock, div.listingblock, div.sidebarblock,
+div.admonitionblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+div.admonitionblock {
+  margin-top: 2.0em;
+  margin-bottom: 2.0em;
+  margin-right: 10%;
+  color: #606060;
+}
+
+div.content { /* Block element content. */
+  padding: 0;
+}
+
+/* Block element titles. */
+div.title, caption.title {
+  color: #527bbd;
+  font-weight: bold;
+  text-align: left;
+  margin-top: 1.0em;
+  margin-bottom: 0.5em;
+}
+div.title + * {
+  margin-top: 0;
+}
+
+td div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content + div.title {
+  margin-top: 0.0em;
+}
+
+div.sidebarblock > div.content {
+  background: #ffffee;
+  border: 1px solid #dddddd;
+  border-left: 4px solid #f0f0f0;
+  padding: 0.5em;
+}
+
+div.listingblock > div.content {
+  border: 1px solid #dddddd;
+  border-left: 5px solid #f0f0f0;
+  background: #f8f8f8;
+  padding: 0.5em;
+}
+
+div.quoteblock, div.verseblock {
+  padding-left: 1.0em;
+  margin-left: 1.0em;
+  margin-right: 10%;
+  border-left: 5px solid #f0f0f0;
+  color: #888;
+}
+
+div.quoteblock > div.attribution {
+  padding-top: 0.5em;
+  text-align: right;
+}
+
+div.verseblock > pre.content {
+  font-family: inherit;
+  font-size: inherit;
+}
+div.verseblock > div.attribution {
+  padding-top: 0.75em;
+  text-align: left;
+}
+/* DEPRECATED: Pre version 8.2.7 verse style literal block. */
+div.verseblock + div.attribution {
+  text-align: left;
+}
+
+div.admonitionblock .icon {
+  vertical-align: top;
+  font-size: 1.1em;
+  font-weight: bold;
+  text-decoration: underline;
+  color: #527bbd;
+  padding-right: 0.5em;
+}
+div.admonitionblock td.content {
+  padding-left: 0.5em;
+  border-left: 3px solid #dddddd;
+}
+
+div.exampleblock > div.content {
+  border-left: 3px solid #dddddd;
+  padding-left: 0.5em;
+}
+
+div.imageblock div.content { padding-left: 0; }
+span.image img { border-style: none; }
+a.image:visited { color: white; }
+
+dl {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+dt {
+  margin-top: 0.5em;
+  margin-bottom: 0;
+  font-style: normal;
+  color: navy;
+}
+dd > *:first-child {
+  margin-top: 0.1em;
+}
+
+ul, ol {
+    list-style-position: outside;
+}
+ol.arabic {
+  list-style-type: decimal;
+}
+ol.loweralpha {
+  list-style-type: lower-alpha;
+}
+ol.upperalpha {
+  list-style-type: upper-alpha;
+}
+ol.lowerroman {
+  list-style-type: lower-roman;
+}
+ol.upperroman {
+  list-style-type: upper-roman;
+}
+
+div.compact ul, div.compact ol,
+div.compact p, div.compact p,
+div.compact div, div.compact div {
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
+}
+
+tfoot {
+  font-weight: bold;
+}
+td > div.verse {
+  white-space: pre;
+}
+
+div.hdlist {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+div.hdlist tr {
+  padding-bottom: 15px;
+}
+dt.hdlist1.strong, td.hdlist1.strong {
+  font-weight: bold;
+}
+td.hdlist1 {
+  vertical-align: top;
+  font-style: normal;
+  padding-right: 0.8em;
+  color: navy;
+}
+td.hdlist2 {
+  vertical-align: top;
+}
+div.hdlist.compact tr {
+  margin: 0;
+  padding-bottom: 0;
+}
+
+.comment {
+  background: yellow;
+}
+
+.footnote, .footnoteref {
+  font-size: 0.8em;
+}
+
+span.footnote, span.footnoteref {
+  vertical-align: super;
+}
+
+#footnotes {
+  margin: 20px 0 20px 0;
+  padding: 7px 0 0 0;
+}
+
+#footnotes div.footnote {
+  margin: 0 0 5px 0;
+}
+
+#footnotes hr {
+  border: none;
+  border-top: 1px solid silver;
+  height: 1px;
+  text-align: left;
+  margin-left: 0;
+  width: 20%;
+  min-width: 100px;
+}
+
+div.colist td {
+  padding-right: 0.5em;
+  padding-bottom: 0.3em;
+  vertical-align: top;
+}
+div.colist td img {
+  margin-top: 0.3em;
+}
+
+@media print {
+  #footer-badges { display: none; }
+}
+
+#toc {
+  margin-bottom: 2.5em;
+}
+
+#toctitle {
+  color: #527bbd;
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-top: 1.0em;
+  margin-bottom: 0.1em;
+}
+
+div.toclevel0, div.toclevel1, div.toclevel2, div.toclevel3, div.toclevel4 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+div.toclevel2 {
+  margin-left: 2em;
+  font-size: 0.9em;
+}
+div.toclevel3 {
+  margin-left: 4em;
+  font-size: 0.9em;
+}
+div.toclevel4 {
+  margin-left: 6em;
+  font-size: 0.9em;
+}
+
+span.aqua { color: aqua; }
+span.black { color: black; }
+span.blue { color: blue; }
+span.fuchsia { color: fuchsia; }
+span.gray { color: gray; }
+span.green { color: green; }
+span.lime { color: lime; }
+span.maroon { color: maroon; }
+span.navy { color: navy; }
+span.olive { color: olive; }
+span.purple { color: purple; }
+span.red { color: red; }
+span.silver { color: silver; }
+span.teal { color: teal; }
+span.white { color: white; }
+span.yellow { color: yellow; }
+
+span.aqua-background { background: aqua; }
+span.black-background { background: black; }
+span.blue-background { background: blue; }
+span.fuchsia-background { background: fuchsia; }
+span.gray-background { background: gray; }
+span.green-background { background: green; }
+span.lime-background { background: lime; }
+span.maroon-background { background: maroon; }
+span.navy-background { background: navy; }
+span.olive-background { background: olive; }
+span.purple-background { background: purple; }
+span.red-background { background: red; }
+span.silver-background { background: silver; }
+span.teal-background { background: teal; }
+span.white-background { background: white; }
+span.yellow-background { background: yellow; }
+
+span.big { font-size: 2em; }
+span.small { font-size: 0.6em; }
+
+span.underline { text-decoration: underline; }
+span.overline { text-decoration: overline; }
+span.line-through { text-decoration: line-through; }
+
+div.unbreakable { page-break-inside: avoid; }
+
+
+/*
+ * xhtml11 specific
+ *
+ * */
+
+div.tableblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+div.tableblock > table {
+  border: 3px solid #527bbd;
+}
+thead, p.table.header {
+  font-weight: bold;
+  color: #527bbd;
+}
+p.table {
+  margin-top: 0;
+}
+/* Because the table frame attribute is overriden by CSS in most browsers. */
+div.tableblock > table[frame="void"] {
+  border-style: none;
+}
+div.tableblock > table[frame="hsides"] {
+  border-left-style: none;
+  border-right-style: none;
+}
+div.tableblock > table[frame="vsides"] {
+  border-top-style: none;
+  border-bottom-style: none;
+}
+
+
+/*
+ * html5 specific
+ *
+ * */
+
+table.tableblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+thead, p.tableblock.header {
+  font-weight: bold;
+  color: #527bbd;
+}
+p.tableblock {
+  margin-top: 0;
+}
+table.tableblock {
+  border-width: 3px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-color: #527bbd;
+  border-collapse: collapse;
+}
+th.tableblock, td.tableblock {
+  border-width: 1px;
+  padding: 4px;
+  border-style: solid;
+  border-color: #527bbd;
+}
+
+table.tableblock.frame-topbot {
+  border-left-style: hidden;
+  border-right-style: hidden;
+}
+table.tableblock.frame-sides {
+  border-top-style: hidden;
+  border-bottom-style: hidden;
+}
+table.tableblock.frame-none {
+  border-style: hidden;
+}
+
+th.tableblock.halign-left, td.tableblock.halign-left {
+  text-align: left;
+}
+th.tableblock.halign-center, td.tableblock.halign-center {
+  text-align: center;
+}
+th.tableblock.halign-right, td.tableblock.halign-right {
+  text-align: right;
+}
+
+th.tableblock.valign-top, td.tableblock.valign-top {
+  vertical-align: top;
+}
+th.tableblock.valign-middle, td.tableblock.valign-middle {
+  vertical-align: middle;
+}
+th.tableblock.valign-bottom, td.tableblock.valign-bottom {
+  vertical-align: bottom;
+}
+
+
+/*
+ * manpage specific
+ *
+ * */
+
+body.manpage h1 {
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  border-top: 2px solid silver;
+  border-bottom: 2px solid silver;
+}
+body.manpage h2 {
+  border-style: none;
+}
+body.manpage div.sectionbody {
+  margin-left: 3em;
+}
+
+@media print {
+  body.manpage div#toc { display: none; }
+}
+
+
+</style>
+<script type="text/javascript">
+/*<![CDATA[*/
+var asciidoc = {  // Namespace.
+
+/////////////////////////////////////////////////////////////////////
+// Table Of Contents generator
+/////////////////////////////////////////////////////////////////////
+
+/* Author: Mihai Bazon, September 2002
+ * http://students.infoiasi.ro/~mishoo
+ *
+ * Table Of Content generator
+ * Version: 0.4
+ *
+ * Feel free to use this script under the terms of the GNU General Public
+ * License, as long as you do not remove or alter this notice.
+ */
+
+ /* modified by Troy D. Hanson, September 2006. License: GPL */
+ /* modified by Stuart Rackham, 2006, 2009. License: GPL */
+
+// toclevels = 1..4.
+toc: function (toclevels) {
+
+  function getText(el) {
+    var text = "";
+    for (var i = el.firstChild; i != null; i = i.nextSibling) {
+      if (i.nodeType == 3 /* Node.TEXT_NODE */) // IE doesn't speak constants.
+        text += i.data;
+      else if (i.firstChild != null)
+        text += getText(i);
+    }
+    return text;
+  }
+
+  function TocEntry(el, text, toclevel) {
+    this.element = el;
+    this.text = text;
+    this.toclevel = toclevel;
+  }
+
+  function tocEntries(el, toclevels) {
+    var result = new Array;
+    var re = new RegExp('[hH]([1-'+(toclevels+1)+'])');
+    // Function that scans the DOM tree for header elements (the DOM2
+    // nodeIterator API would be a better technique but not supported by all
+    // browsers).
+    var iterate = function (el) {
+      for (var i = el.firstChild; i != null; i = i.nextSibling) {
+        if (i.nodeType == 1 /* Node.ELEMENT_NODE */) {
+          var mo = re.exec(i.tagName);
+          if (mo && (i.getAttribute("class") || i.getAttribute("className")) != "float") {
+            result[result.length] = new TocEntry(i, getText(i), mo[1]-1);
+          }
+          iterate(i);
+        }
+      }
+    }
+    iterate(el);
+    return result;
+  }
+
+  var toc = document.getElementById("toc");
+  if (!toc) {
+    return;
+  }
+
+  // Delete existing TOC entries in case we're reloading the TOC.
+  var tocEntriesToRemove = [];
+  var i;
+  for (i = 0; i < toc.childNodes.length; i++) {
+    var entry = toc.childNodes[i];
+    if (entry.nodeName.toLowerCase() == 'div'
+     && entry.getAttribute("class")
+     && entry.getAttribute("class").match(/^toclevel/))
+      tocEntriesToRemove.push(entry);
+  }
+  for (i = 0; i < tocEntriesToRemove.length; i++) {
+    toc.removeChild(tocEntriesToRemove[i]);
+  }
+
+  // Rebuild TOC entries.
+  var entries = tocEntries(document.getElementById("content"), toclevels);
+  for (var i = 0; i < entries.length; ++i) {
+    var entry = entries[i];
+    if (entry.element.id == "")
+      entry.element.id = "_toc_" + i;
+    var a = document.createElement("a");
+    a.href = "#" + entry.element.id;
+    a.appendChild(document.createTextNode(entry.text));
+    var div = document.createElement("div");
+    div.appendChild(a);
+    div.className = "toclevel" + entry.toclevel;
+    toc.appendChild(div);
+  }
+  if (entries.length == 0)
+    toc.parentNode.removeChild(toc);
+},
+
+
+/////////////////////////////////////////////////////////////////////
+// Footnotes generator
+/////////////////////////////////////////////////////////////////////
+
+/* Based on footnote generation code from:
+ * http://www.brandspankingnew.net/archive/2005/07/format_footnote.html
+ */
+
+footnotes: function () {
+  // Delete existing footnote entries in case we're reloading the footnodes.
+  var i;
+  var noteholder = document.getElementById("footnotes");
+  if (!noteholder) {
+    return;
+  }
+  var entriesToRemove = [];
+  for (i = 0; i < noteholder.childNodes.length; i++) {
+    var entry = noteholder.childNodes[i];
+    if (entry.nodeName.toLowerCase() == 'div' && entry.getAttribute("class") == "footnote")
+      entriesToRemove.push(entry);
+  }
+  for (i = 0; i < entriesToRemove.length; i++) {
+    noteholder.removeChild(entriesToRemove[i]);
+  }
+
+  // Rebuild footnote entries.
+  var cont = document.getElementById("content");
+  var spans = cont.getElementsByTagName("span");
+  var refs = {};
+  var n = 0;
+  for (i=0; i<spans.length; i++) {
+    if (spans[i].className == "footnote") {
+      n++;
+      var note = spans[i].getAttribute("data-note");
+      if (!note) {
+        // Use [\s\S] in place of . so multi-line matches work.
+        // Because JavaScript has no s (dotall) regex flag.
+        note = spans[i].innerHTML.match(/\s*\[([\s\S]*)]\s*/)[1];
+        spans[i].innerHTML =
+          "[<a id='_footnoteref_" + n + "' href='#_footnote_" + n +
+          "' title='View footnote' class='footnote'>" + n + "</a>]";
+        spans[i].setAttribute("data-note", note);
+      }
+      noteholder.innerHTML +=
+        "<div class='footnote' id='_footnote_" + n + "'>" +
+        "<a href='#_footnoteref_" + n + "' title='Return to text'>" +
+        n + "</a>. " + note + "</div>";
+      var id =spans[i].getAttribute("id");
+      if (id != null) refs["#"+id] = n;
+    }
+  }
+  if (n == 0)
+    noteholder.parentNode.removeChild(noteholder);
+  else {
+    // Process footnoterefs.
+    for (i=0; i<spans.length; i++) {
+      if (spans[i].className == "footnoteref") {
+        var href = spans[i].getElementsByTagName("a")[0].getAttribute("href");
+        href = href.match(/#.*/)[0];  // Because IE return full URL.
+        n = refs[href];
+        spans[i].innerHTML =
+          "[<a href='#_footnote_" + n +
+          "' title='View footnote' class='footnote'>" + n + "</a>]";
+      }
+    }
+  }
+},
+
+install: function(toclevels) {
+  var timerId;
+
+  function reinstall() {
+    asciidoc.footnotes();
+    if (toclevels) {
+      asciidoc.toc(toclevels);
+    }
+  }
+
+  function reinstallAndRemoveTimer() {
+    clearInterval(timerId);
+    reinstall();
+  }
+
+  timerId = setInterval(reinstall, 500);
+  if (document.addEventListener)
+    document.addEventListener("DOMContentLoaded", reinstallAndRemoveTimer, false);
+  else
+    window.onload = reinstallAndRemoveTimer;
+}
+
+}
+asciidoc.install();
+/*]]>*/
+</script>
+</head>
+<body class="article">
+<div id="header">
+<h1>OpenStack Backup and Restore</h1>
+<span id="author">Red Hat Tiger Team</span><br />
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_topics_covered">Topics Covered</h2>
+<div class="sectionbody">
+<div class="ulist"><ul>
+<li>
+<p>
+Why Backup OpenStack?
+</p>
+</li>
+<li>
+<p>
+What Should an OpenStack Backup Include?
+</p>
+</li>
+<li>
+<p>
+Backup Script: openstack-backup.sh
+</p>
+</li>
+<li>
+<p>
+Backup Examples
+</p>
+</li>
+<li>
+<p>
+Restore Examples
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_why_backup_openstack">Why Backup OpenStack?</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>OpenStack is a complex layer of software that is installed on RHEL by consultants and tigers.  The effort to install and configure OpenStack is significant, often taking days and weeks.  New features and bug fixes are constant sources of change for OpenStack, so the potential for upgrades and enhancements is high.  Everything surrounding OpenStack is about change.  Finally, the consumers of IaaS will place heavy demands on OpenStack for availability.  With greater demand goes greater risks.</p></div>
+<div class="paragraph"><p>A drop-in backup tool for OpenStack can save consultants a lot of rework in the wake of a mistake or failure.  The backup can also serve as a historical record of changes over the project.  Recovering an OpenStack from a backup may be an attractive option on a system that has evolved well beyond it&#8217;s initial installation.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_what_should_an_openstack_backup_include">What Should an OpenStack Backup Include?</h2>
+<div class="sectionbody">
+<div class="ulist"><ul>
+<li>
+<p>
+OpenStack component configuration &amp; database exports
+</p>
+</li>
+<li>
+<p>
+RHEL configurations shared with OpenStack (services, rpms, &#8230;)
+</p>
+</li>
+<li>
+<p>
+Tenant Objects such as volumes and instances are out of scope (for now)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Backups should be made from a known-good, working system, as soon after installation as possible.  The scripts demonstrated here can be run from a root crontab entry on a regular basis or before any major changes are made to an OpenStack system.</p></div>
+<div class="paragraph"><p>The resulting backup directory resides on the local system in /tmp/$hostname and can also be turned into a git repo.  As each backup is taken, git can process new files/changes by adding the changes and committing them.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_backup_script_openstack_backup_sh">Backup script: openstack-backup.sh</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>openstack-backup.sh is a bash script that can be run on any system with OpenStack software installed.  It targets specific paths on the system, mysql databases, mongodb databases, and shared areas within RHEL and copies them into the /tmp directory.  The rsync utility is used to perform the copies and then a git repository is created of the resulting directory so that change history can be collected.</p></div>
+<div class="paragraph"><p>There are several options to openstack-backup.sh that determine which components are backed up.  The recommended way to use openstack-backup.sh is with the <strong>-c all</strong> option that will capture any and all OpenStack configurations on the sytem.  Individual components can be backed up with the appropriate option.</p></div>
+<div class="paragraph"><p>openstack-backup.sh has been tested on RHEL 6.5 systems with an OSP 4.0 all-in-one installation and on RHEL 7.0 with OSP 5 Beta.</p></div>
+<div class="paragraph"><p>The script source can be found at <a href="https://github.com/jsimonelli/openstack_backup">https://github.com/jsimonelli/openstack_backup</a>, owned by Jose Simonelli, Red Hat Cloud Domain Architect.</p></div>
+<div class="sect2">
+<h3 id="_openstack_backup_sh_usage">openstack-backup.sh usage</h3>
+<div class="listingblock">
+<div class="content">
+<pre><code># openstack-backup.sh
+    echo -e "Usage: $0 [ OPTIONS ]
+    -c [ ceilometer | controller | compute | neutron | heat | keystone | dashboard | glance | mysql | memcached | mongodb | nova +
+       | nagios | cinder | swift | haproxy | rabbitmq | qpid | trove | foreman ]
+    -c all   # Backup all components
+    -e clean # THIS WILL WIPE OUT THE BACKUP DIR"</code></pre>
+</div></div>
+<div class="paragraph"><p>As you can see, individual components can be backed up with each use of openstack-backup.sh, or you can backup controller services, nova services, or <strong>all</strong> services.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_option_c_controller">Option -c controller</h3>
+<div class="paragraph"><p>Selecting -c controller will backup all the API endpoints on a typical controller:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+cinder
+</p>
+</li>
+<li>
+<p>
+swift
+</p>
+</li>
+<li>
+<p>
+keystone
+</p>
+</li>
+<li>
+<p>
+dashboard
+</p>
+</li>
+<li>
+<p>
+rabbitmq
+</p>
+</li>
+<li>
+<p>
+qpid
+</p>
+</li>
+<li>
+<p>
+nova
+</p>
+</li>
+<li>
+<p>
+mongodb
+</p>
+</li>
+<li>
+<p>
+mysql
+</p>
+</li>
+<li>
+<p>
+neutron
+</p>
+</li>
+</ol></div>
+</div>
+<div class="sect2">
+<h3 id="_option_c_compute">Option -c compute</h3>
+<div class="paragraph"><p>Selecting -c compute will backup the API endpoints on a typical compute node</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+nova
+</p>
+</li>
+<li>
+<p>
+neutron
+</p>
+</li>
+</ol></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">Glance images, nova instances and volumes are explicitly <strong>NOT</strong> backed up by openstack-backup.sh</td>
+</tr></table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_discovering_openstack_objects">Discovering OpenStack objects</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Determining what to include in an OpenStack backup was a process of discovery.  The search goes beyond just the RPMs that make up OpenStack; it includes databases and files owned by the OS but modified for use by OpenStack. <br /></p></div>
+<div class="paragraph"><p>The effort taken to discover what should be included in a backup went like this:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Build a new system with RHEL 6.5 Base
+</p>
+</li>
+<li>
+<p>
+Install an all-in-one OpenStack 4.0 onto the system using packstack
+</p>
+</li>
+<li>
+<p>
+Inventory the new RPMs added by packstack
+</p>
+<div class="olist loweralpha"><ol class="loweralpha">
+<li>
+<p>
+RPM configuration files
+</p>
+</li>
+<li>
+<p>
+RPM script files
+</p>
+</li>
+</ol></div>
+</li>
+<li>
+<p>
+Inventory all the new files added or modified to the system since OpenStack was installed
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>OpenStack makes use of LVM for cinder volumes, httpd service for the Horizon GUI, and the /etc/passwd file for keystone accounts.  We back those files up with the rest of OpenStack even though they are not owned by OpenStack:</p></div>
+<div class="listingblock">
+<div class="title">Discovered Paths for OpenStack Backup</div>
+<div class="content">
+<pre><code>/etc/ceilometer/
+/etc/cinder/
+/etc/firewalld/
+/etc/fstab
+/etc/glance/
+/etc/group
+/etc/gshadow
+/etc/haproxy/
+/etc/heat/
+/etc/httpd/
+/etc/keystone/
+/etc/mongodb.conf
+/etc/my.cnf*
+/etc/mysql/
+/etc/nova/
+/etc/neutron/
+/etc/openstack-dashboard/
+/etc/openvswitch/
+/etc/passwd
+/etc/pki/
+/etc/profile.d/
+/etc/puppet/
+/etc/qpid*
+/etc/rabbitmq/
+/etc/rc.d/
+/etc/rsync.conf
+/etc/rsync.d/
+/etc/selinux/
+/etc/shadow
+/etc/sudoers.d/
+/etc/swift/
+/etc/sysconfig/
+/etc/sysctl.conf
+/etc/tgt/
+/etc/trove/
+/etc/tune-profiles/active-profile
+/etc/xinetd.conf
+/etc/xinetd.d/rsync
+/var/lib/iscsi
+/var/lib/libvirt
+/var/lib/puppet
+/var/spool/cron
+/var/spool/nagios
+/var/tmp/packstack
+/var/www/html</code></pre>
+</div></div>
+<div class="paragraph"><p>Not all of these folders will exist on every OpenStack server, but you risk nothing if you include them in your backups.  Including all of them, makes the backup script suitable for any OpenStack server.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_demonstration_backup_an_all_in_one_server">Demonstration: Backup An All-in-one server</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>In this section, we&#8217;ll demonstrate several scenarios for backup of an OpenStack all-in-one server.  All backups are written locally to /tmp/<code>hostname</code> with the 3rd subdirectory taking the name of the backup option;  backup-all, backup-cinder, backup-controller &#8230; &#8230;etc.</p></div>
+<div class="sect2">
+<h3 id="_example_1_backup_the_allinone_controller_components">Example 1: backup the allinone controller components</h3>
+<div class="listingblock">
+<div class="content">
+<pre><code># openstack-backup.sh -c controller</code></pre>
+</div></div>
+<div class="listingblock">
+<div class="title">Resulting backup tree</div>
+<div class="content">
+<pre><code># ls -ld /tmp/allinone/backup-controller/*/{*,.*}
+drwxr-xr-x. 3 root     root      4096 Jun  3 19:46 /tmp/allinone/backup-controller/etc/cinder
+drwxr-xr-x. 4 root     root      4096 Jun  3 19:54 /tmp/allinone/backup-controller/etc/httpd
+-rw-r--r--. 1 root     root     67496 Jun 13 09:04 /tmp/allinone/backup-controller/etc/installed-rpms.txt
+drwxr-x---. 3 keystone keystone  4096 Jun  3 19:44 /tmp/allinone/backup-controller/etc/keystone
+-rw-r--r--. 1 root     root       656 Jun  3 20:01 /tmp/allinone/backup-controller/etc/mongodb.conf
+-rw-r--r--. 1 root     root       786 Jun  4 19:20 /tmp/allinone/backup-controller/etc/my.cnf
+drwxr-x---. 3 root     neutron   4096 Jun  3 19:52 /tmp/allinone/backup-controller/etc/neutron
+drwxr-xr-x. 2 root     root      4096 Jun  3 19:47 /tmp/allinone/backup-controller/etc/nova
+drwxr-x---. 2 root     apache    4096 Jun  4 19:22 /tmp/allinone/backup-controller/etc/openstack-dashboard
+drwxr-xr-x. 2 root     root      4096 Jun  3 19:52 /tmp/allinone/backup-controller/etc/openvswitch
+drwxr-xr-x. 2 root     root      4096 Jun 13 09:04 /tmp/allinone/backup-controller/etc/security
+drwxrws---. 7 swift    swift     4096 Jun  3 19:57 /tmp/allinone/backup-controller/etc/swift
+drwxr-xr-x. 3 root     root      4096 Jun 13 09:04 /tmp/allinone/backup-controller/etc/sysconfig</code></pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_example_2_add_a_crontab_entry_for_automation_to_capture_ongoing_changes">Example 2: Add a crontab entry for automation to capture ongoing changes</h3>
+<div class="listingblock">
+<div class="title">Crontab example: every 6 hours</div>
+<div class="content">
+<pre><code>0 */6 * * *  /root/openstack-backup.sh  -c controller &gt; /dev/null 2&gt;&amp;1</code></pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_example_3_backup_the_allinone_neutron_amp_nova_components">Example 3: backup the allinone neutron &amp; nova components</h3>
+<div class="listingblock">
+<div class="content">
+<pre><code># openstack-backup.sh -c neutron
+# openstack-backup.sh -c nova</code></pre>
+</div></div>
+<div class="listingblock">
+<div class="title">Resulting Backup Tree</div>
+<div class="content">
+<pre><code>[root@allinone ~]# ls -ld /tmp/allinone/backup-*/*/{*,.*}
+-rw-r--r--. 1 root root      997 Jun  3 20:04 /tmp/allinone/backup-neutron/etc/group
+-rw-r--r--. 1 root root    68157 Jun 19 12:59 /tmp/allinone/backup-neutron/etc/installed-rpms.txt
+drwxr-xr-x. 2 root root     4096 Jun  4 19:19 /tmp/allinone/backup-neutron/etc/logrotate.d
+drwxr-x---. 3 root neutron  4096 Jun  3 19:52 /tmp/allinone/backup-neutron/etc/neutron
+drwxr-xr-x. 2 root root     4096 Jun  3 19:52 /tmp/allinone/backup-neutron/etc/openvswitch
+-rw-r--r--. 1 root root     2456 Jun  3 20:04 /tmp/allinone/backup-neutron/etc/passwd
+drwxr-xr-x. 2 root root     4096 Jun 19 12:59 /tmp/allinone/backup-neutron/etc/security
+----------. 1 root root     1199 Jun  3 20:04 /tmp/allinone/backup-neutron/etc/shadow
+drwxr-x---. 2 root root     4096 Jun  3 19:52 /tmp/allinone/backup-neutron/etc/sudoers.d
+drwxr-xr-x. 3 root root     4096 Jun 19 12:59 /tmp/allinone/backup-neutron/etc/sysconfig
+-rw-r--r--. 1 root root     1302 Jun  3 19:52 /tmp/allinone/backup-neutron/etc/sysctl.conf
+drwxr-xr-x. 3 root root     4096 Jun 19 12:59 /tmp/allinone/backup-neutron/usr/local
+drwxr-xr-x. 6 root root     4096 Jun 19 12:59 /tmp/allinone/backup-neutron/var/lib
+drwxr-xr-x. 3 root root     4096 Jun 19 12:59 /tmp/allinone/backup-neutron/var/spool
+drwxr-xr-x. 3 root root     4096 Jun 19 12:59 /tmp/allinone/backup-neutron/var/tmp
+-rw-r--r--. 1 root root      997 Jun  3 20:04 /tmp/allinone/backup-nova/etc/group
+-rw-r--r--. 1 root root    68157 Jun 19 12:59 /tmp/allinone/backup-nova/etc/installed-rpms.txt
+drwxr-xr-x. 2 root root     4096 Jun  4 19:19 /tmp/allinone/backup-nova/etc/logrotate.d
+drwxr-xr-x. 2 root root     4096 Jun  3 19:47 /tmp/allinone/backup-nova/etc/nova
+-rw-r--r--. 1 root root     2456 Jun  3 20:04 /tmp/allinone/backup-nova/etc/passwd
+drwxr-xr-x. 3 root root     4096 Jun 19 12:59 /tmp/allinone/backup-nova/etc/polkit-1
+drwxr-xr-x. 2 root root     4096 Jun 19 12:59 /tmp/allinone/backup-nova/etc/security
+----------. 1 root root     1199 Jun  3 20:04 /tmp/allinone/backup-nova/etc/shadow
+drwxr-x---. 2 root root     4096 Jun  3 19:52 /tmp/allinone/backup-nova/etc/sudoers.d
+drwxr-xr-x. 3 root root     4096 Jun 19 12:59 /tmp/allinone/backup-nova/etc/sysconfig
+-rw-r--r--. 1 root root     1302 Jun  3 19:52 /tmp/allinone/backup-nova/etc/sysctl.conf
+drwxr-xr-x. 3 root root     4096 Jun 19 12:59 /tmp/allinone/backup-nova/usr/local
+drwxr-xr-x. 5 root root     4096 Jun 19 12:59 /tmp/allinone/backup-nova/var/lib
+drwxr-xr-x. 3 root root     4096 Jun 19 12:59 /tmp/allinone/backup-nova/var/spool
+drwxr-xr-x. 3 root root     4096 Jun 19 12:59 /tmp/allinone/backup-nova/var/tmp</code></pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_example_4_backup_the_allinone_mysql_amp_mongo_db_and_ceilometer">Example 4: backup the allinone mysql &amp; mongo DB and ceilometer</h3>
+<div class="listingblock">
+<div class="content">
+<pre><code># openstack-backup.sh -c mysql
+# openstack-backup.sh -c mongodb
+# openstack-backup.sh -c ceilometer</code></pre>
+</div></div>
+<div class="listingblock">
+<div class="title">Resulting Backup Tree</div>
+<div class="content">
+<pre><code># ls -ld /tmp/allinone/backup-*/*/
+drwxr-xr-x.  7 root root 4096 Jun 19 12:26 /tmp/allinone/backup-ceilometer/etc/
+drwxr-xr-x.  3 root root 4096 Jun 19 12:26 /tmp/allinone/backup-ceilometer/usr/
+drwxr-xr-x.  5 root root 4096 Jun 19 12:26 /tmp/allinone/backup-ceilometer/var/
+drwxr-xr-x.  6 root root 4096 Jun 19 12:24 /tmp/allinone/backup-mongodb/etc/
+drwxr-xr-x.  3 root root 4096 Jun 19 12:24 /tmp/allinone/backup-mongodb/mongodb/
+drwxr-xr-x.  3 root root 4096 Jun 19 12:24 /tmp/allinone/backup-mongodb/usr/
+drwxr-xr-x.  5 root root 4096 Jun 19 12:24 /tmp/allinone/backup-mongodb/var/
+drwxr-xr-x.  7 root root 4096 Jun 19 12:23 /tmp/allinone/backup-mysql/etc/
+drwxr-xr-x.  2 root root 4096 Jun 19 12:23 /tmp/allinone/backup-mysql/mysql/
+drwxr-xr-x.  3 root root 4096 Jun 19 12:13 /tmp/allinone/backup-mysql/usr/
+drwxr-xr-x.  5 root root 4096 Jun 19 12:13 /tmp/allinone/backup-mysql/var/</code></pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_example_5_replicating_the_backup_tree">Example 5: Replicating the Backup Tree</h3>
+<div class="paragraph"><p>The local backup tree resides in /tmp/$(hostname)/ and is convenient for quick restores of files and directories.  For safety, it is recommended that this tree be copied to another host or site.</p></div>
+<div class="paragraph"><p>Cron can be used to automate the backup schedule as well as copying the backup tree off-host.</p></div>
+<div class="listingblock">
+<div class="title">Replication of backup tree</div>
+<div class="content">
+<pre><code># rsync -av  /tmp/$(hostname)  ${SOMEHOST}:/tmp/</code></pre>
+</div></div>
+<div class="listingblock">
+<div class="title">Cron Automation to Replicate and backup</div>
+<div class="content">
+<pre><code>5   * * * *  /root/openstack-backup.sh -c all 2&gt;&amp;1 | mail -s "OpenStack Backup" jdoe@redhat.com
+15  * * * *  /usr/bin/rsync -av /tmp/`uname -n`  remotehost:/tmp/ 2&gt;&amp;1 | mail -s "Backup Replication" jdoe@redhat.com</code></pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_example_6_removing_the_backup_tree">Example 6: Removing the backup tree</h3>
+<div class="listingblock">
+<div class="content">
+<pre><code>#  openstack-backup.sh -e clean</code></pre>
+</div></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_demonstration_restoring_from_backup_tree">Demonstration: Restoring From Backup Tree</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Restoring from the backup tree requires some thought and experience with OpenStack.  In general, a restore should be done with services and databases stopped.  The restore should be done from the appropriate source which may require the original rpm for a component to be installed first.  Depending upon the situation that requires a restore, the consultant must make a decision about which steps are required below.</p></div>
+<div class="olist arabic"><div class="title">General Steps for Restoring Components</div><ol class="arabic">
+<li>
+<p>
+Stop the service &amp; database
+</p>
+</li>
+<li>
+<p>
+Reinstall any damaged or missing files from their rpm
+</p>
+</li>
+<li>
+<p>
+Restore configuration files from backup
+</p>
+</li>
+<li>
+<p>
+Restore databases from backup
+</p>
+</li>
+<li>
+<p>
+Start the service &amp; database
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>RHEL rpms contain configuration files and post-install scripts which can be listed using "rpm -qc" and "rpm -qs".  Sometimes it may be necessary to reinstall an openstack rpm for a component in order to replace missing files.  If an original rpm is reinstalled, then you almost certainly will need to restore</p></div>
+<div class="sect2">
+<h3 id="_example_1_restore_the_etc_cinder_cinder_conf_file">Example 1: Restore the /etc/cinder/cinder.conf file</h3>
+<div class="listingblock">
+<div class="title">Restore a file from backup</div>
+<div class="content">
+<pre><code># service openstack-cinder stop
+# cp -p /etc/cinder/cinder.conf  /etc/cinder/cinder.conf.orig
+# cp -p /tmp/allinone/backup-all/etc/cinder/cinder.conf  /etc/cinder/cinder.conf
+# service openstack-cinder start</code></pre>
+</div></div>
+<div class="listingblock">
+<div class="title">Restore a file from its original rpm</div>
+<div class="content">
+<pre><code># service openstack-cinder stop
+# cp -p /etc/cinder/cinder.conf  /etc/cinder/cinder.conf.orig
+# rpm -qf /etc/cinder/cinder.conf
+openstack-cinder-2013.2.3-2.el6ost.noarch.rpm
+# yumdownloader openstack-cinder
+openstack-cinder-2013.2.3-2.el6ost.noarch.rpm    |  46 kB     00:00
+# rpm2cpio openstack-cinder-2013.2.3-2.el6ost.noarch.rpm | cpio -idv
+# cp etc/cinder/cinder.conf /etc/cinder
+# service openstack-cinder start</code></pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_example_2_restore_the_cinder_iscsi_configuration_from_backup">Example 2: Restore the cinder iscsi configuration from backup</h3>
+<div class="listingblock">
+<div class="title">Restore a directory from backup</div>
+<div class="content">
+<pre><code># service tgtd stop
+# mv /var/lib/iscsi{,.x}
+# mv /etc/tgt/targets.conf{,.x)
+# rsync -av /tmp/allinone/backup-all/var/lib/iscsi  /var/lib/
+# rsync -av /tmp/allinone/backup-all/etc/tgt/targets.conf /etc/tgt/
+# service tgtd start</code></pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_example_3_restore_the_mysql_keystone_database_from_backup">Example 3: Restore the MySQL keystone database from backup</h3>
+<div class="listingblock">
+<div class="title">Restore individual Keystone MySQL database from backup files</div>
+<div class="content">
+<pre><code># service mysqld stop
+# service openstack-keystone stop
+# mysql keystone &lt; /tmp/allinone/backup-all/mysql/keystone.sql
+# service mysqld start
+# service openstack-keystone start</code></pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_example_4_restore_the_entire_openstack_mysql_database_from_backup">Example 4: Restore the entire OpenStack MySQL database from backup</h3>
+<div class="listingblock">
+<div class="title">Restore all OpenStack MySQL databases from complete backup</div>
+<div class="content">
+<pre><code># service mysqld stop
+# mysql &lt; /tmp/allinone/backup-all/mysql/all-openstack.sql
+# service mysqld start</code></pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_example_5_restore_the_keystone_service_component">Example 5: Restore the keystone service (component)</h3>
+<div class="paragraph"><p>Assuming that the keystone service was previously working and that a backup of it was completed, you can restore the service manually using RPMs and backups:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Stop Keystone Service
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># service openstack-keystone stop</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Reinstall the keystone rpms (optional)
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>yum -y reinstall openstack-keystone openstack-selinux openstack-utils</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Restore keystone configuration files from backup
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># rsync -av /tmp/allinone/backup-all/etc/keystone/  /etc/keystone/</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Recover the keystone DB from backup
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># mysql keystone &lt; /tmp/allinone/backup-all/mysql/keystone.sql</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Restart the service
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># service openstack-keystone start</code></pre>
+</div></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">It may be necessary to review and restore the following shared files used by keystone:</td>
+</tr></table>
+</div>
+</li>
+<li>
+<p>
+Shared files used by Keystone<br />
+The following files are not owned by OpenStack RPMs, but they are important to it&#8217;s operation.  Review this list and restore them as needed.  One quick check is to use rsync to determine if the backup files are different from those on the system already:
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>/etc/passwd
+/etc/group
+/etc/shadow
+/etc/gshadow
+/etc/pki/tls
+/etc/selinux/targeted/modules/active/file_contexts</code></pre>
+</div></div>
+</li>
+</ol></div>
+<div class="listingblock">
+<div class="title">Using rsync with -n to report differences without copying.</div>
+<div class="content">
+<pre><code>#  rsync -nav  /tmp/`hostname`/backup-all/etc/keystone/  /etc/keystone/</code></pre>
+</div></div>
+</div>
+<div class="sect2">
+<h3 id="_example_6_restore_the_qpid_service_component">Example 6: Restore the qpid service (component)</h3>
+<div class="paragraph"><p>Assuming that the qpid service was previously working and that a backup of it was completed, you can restore the service manually using RPMs and backups:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Stop qpidd Service
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># service qpidd stop</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Reinstall the qpidd rpms (optional)
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>yum -y reinstall qpid-cpp-server qpid-cpp-server-ssl cyrus-sasl-md5</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Restore qpidd configuration files from backup
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># rsync -av /tmp/allinone/backup-all/etc/qpidd/      /etc/qpidd/
+# rsync -av /tmp/allinone/backup-all/etc/qpidd.conf  /etc/
+# rsync -av /tmp/allinone/backup-all/etc/sasl2/      /etc/sasl2/
+# rsync -av /tmp/allinone/backup-all/var/lib/qpidd/  /var/lib/qpidd/</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Restart the service
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># service qpidd start</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Shared files used by qpidd<br />
+The following files are not owned by OpenStack RPMs, but they are important to it&#8217;s operation.  Review this list and restore them as needed.  One quick check is to use rsync to determine if the backup files are different from those on the system already:
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>/etc/passwd
+/etc/group
+/etc/shadow
+/etc/gshadow
+/etc/selinux/targeted/modules/active/file_contexts</code></pre>
+</div></div>
+</li>
+</ol></div>
+</div>
+<div class="sect2">
+<h3 id="_example_7_restore_the_cinder_service">Example 7: Restore the cinder service</h3>
+<div class="paragraph"><p>Assuming that the cinder service was previously working and that a backup of it was completed, you can restore the service manually using RPMs and backups:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Stop cinder Service
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># service openstack-cinder-api stop
+# service openstack-cinder-backup stop
+# service openstack-cinder-scheduler stop
+# service openstack-cinder-volume stop
+# service tgtd stop</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Reinstall the cinder rpms (optional)
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>yum -y reinstall openstack-cinder scsi-target-utils</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Restore cinder configuration files from backup
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># rsync -av /tmp/allinone/backup-all/etc/cinder/            /etc/cinder/
+# rsync -av /tmp/allinone/backup-all/etc/logrotate.d/       /etc/logrotate.d/
+# rsync -av /tmp/allinone/backup-all/etc/sudoers.d/         /etc/sudoers.d/
+# rsync -av /tmp/allinone/backup-all/etc/tgt/               /etc/tgt/
+# rsync -av /tmp/allinone/backup-all/etc/sysconfig/tgtd     /etc/sysconfig/
+# rsync -av /tmp/allinone/backup-all/var/lib/cinder/        /var/lib/cinder/</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Restore the cinder database
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># mysql cinder &lt; /tmp/allinone/backup-all/mysql/cinder.sql</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Restart the service
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># service openstack-cinder-api start
+# service openstack-cinder-backup start
+# service openstack-cinder-scheduler start
+# service openstack-cinder-volume start
+# service tgtd start</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Shared files used by cinder<br />
+The following files are not owned by OpenStack RPMs, but they are important to it&#8217;s operation.  Review this list and restore them as needed.  One quick check is to use rsync to determine if the backup files are different from those on the system already:
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>/etc/passwd
+/etc/group
+/etc/shadow
+/etc/gshadow
+/etc/selinux/targeted/modules/active/file_contexts</code></pre>
+</div></div>
+</li>
+</ol></div>
+</div>
+<div class="sect2">
+<h3 id="_example_8_restore_the_swift_service">Example 8: Restore the swift service</h3>
+<div class="paragraph"><p>Assuming that the swift service was previously working and that a backup of it was completed, you can restore the service manually using RPMs and backups:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Stop swift Service
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># service openstack-swift-account stop
+# service openstack-swift-container stop
+# service openstack-swift-object stop
+# service openstack-swift-proxy stop
+# service memcached stop</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Reinstall the swift rpms (optional)
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>yum -y reinstall openstack-swift-proxy openstack-swift-object openstack-swift-container openstack-swift-account memcached</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Restore swift configuration files from backup
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># rsync -av /tmp/allinone/backup-all/etc/rsync.d/    /etc/rsync.d/
+# rsync -av /tmp/allinone/backup-all/etc/swift/      /etc/swift/
+# rsync -av /tmp/allinone/backup-all/var/lib/swift/  /var/lib/swift/</code></pre>
+</div></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">Swift does not have a database associated with it.</td>
+</tr></table>
+</div>
+</li>
+<li>
+<p>
+Restart the service
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># service openstack-swift-proxy start
+# service openstack-swift-account start
+# service openstack-swift-container start
+# service openstack-swift-object start
+# service memcached start</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Shared files used by swift<br />
+The following files are not owned by OpenStack RPMs, but they are important to it&#8217;s operation.  Review this list and restore them as needed.  One quick check is to use rsync to determine if the backup files are different from those on the system already:
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>/etc/passwd
+/etc/group
+/etc/shadow
+/etc/gshadow
+/etc/selinux/targeted/modules/active/file_contexts</code></pre>
+</div></div>
+</li>
+</ol></div>
+</div>
+<div class="sect2">
+<h3 id="_example_9_restore_the_glance_service">Example 9: Restore the glance service</h3>
+<div class="paragraph"><p>Assuming that the glance service was previously working and that a backup of it was completed, you can restore the service manually using RPMs and backups:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Stop glance Service
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># service openstack-glance-registry stop
+# service openstack-glance-scrubber stop
+# service openstack-glance-api stop</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Reinstall the glance rpms (optional)
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>yum -y reinstall openstack-glance libguestfs-tools</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Restore glance configuration files from backup
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># rsync -av /tmp/allinone/backup-all/etc/glance/      /etc/glance/
+# rsync -av /tmp/allinone/backup-all/etc/logrotate.d/openstack-glance      /etc/logrotate.d/
+# rsync -av /tmp/allinone/backup-all/var/lib/glance/  /var/lib/glance/</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Restore the glance database
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># mysql glance &lt; /tmp/allinone/backup-all/mysql/glance.sql</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Restart the service
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># service openstack-glance-registry start
+# service openstack-glance-scrubber start
+# service openstack-glance-api start</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Shared files used by glance<br />
+The following files are not owned by OpenStack RPMs, but they are important to it&#8217;s operation.  Review this list and restore them as needed.  One quick check is to use rsync to determine if the backup files are different from those on the system already:
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>/etc/passwd
+/etc/group
+/etc/shadow
+/etc/gshadow
+/etc/selinux/targeted/modules/active/file_contexts</code></pre>
+</div></div>
+</li>
+</ol></div>
+</div>
+<div class="sect2">
+<h3 id="_example_10_restore_the_heat_service">Example 10: Restore the heat service</h3>
+<div class="paragraph"><p>Assuming that the heat service was previously working and that a backup of it was completed, you can restore the service manually using RPMs and backups:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Stop heat Service
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># service openstack-heat-api stop
+# service openstack-heat-api-cfn stop
+# service openstack-heat-api-cloudwatch stop
+# service openstack-heat-engine stop</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Reinstall the heat rpms (optional)
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>yum -y reinstall openstack-heat-*</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Restore heat configuration files from backup
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># rsync -av /tmp/allinone/backup-all/etc/heat/      /etc/heat/
+# rsync -av /tmp/allinone/backup-all/var/lib/heat/  /var/lib/heat/</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Restore the heat database
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># mysql heat &lt; /tmp/allinone/backup-all/mysql/heat.sql</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Restart the service
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># service openstack-heat-api start
+# service openstack-heat-api-cfn start
+# service openstack-heat-api-cloudwatch start
+# service openstack-heat-engine start</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Shared files used by Heat<br />
+The following files are not owned by OpenStack RPMs, but they are important to it&#8217;s operation.  Review this list and restore them as needed.  One quick check is to use rsync to determine if the backup files are different from those on the system already:
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>/etc/passwd
+/etc/group
+/etc/shadow
+/etc/gshadow
+/etc/selinux/targeted/modules/active/file_contexts</code></pre>
+</div></div>
+</li>
+</ol></div>
+</div>
+<div class="sect2">
+<h3 id="_example_11_restore_the_neutron_service">Example 11: Restore the neutron service</h3>
+<div class="paragraph"><p>Assuming that the neutron service was previously working and that a backup of it was completed, you can restore the service manually using RPMs and backups:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Stop the neutron services
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># service neutron-dhcp-agent stop
+# service neutron-l3-agent stop
+# service neutron-metadata-agent stop
+# service neutron-openvswitch-agent stop
+# service neutron-ovs-cleanup stop
+# service neutron-server stop</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Reinstall the neutron rpms (optional)
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>yum -y reinstall openstack-neutron openstack-neutron-openvswitch openstack-nova-common</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Restore neutron configuration files from backup
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># rsync -av /tmp/allinone/backup-all/etc/neutron/      /etc/neutron/
+# rsync -av /tmp/allinone/backup-all/etc/openvswitch/  /etc/openvswitch/
+# rsync -av /tmp/allinone/backup-all/etc/logrotate.d/  /etc/logrotate.d/
+# rsync -av /tmp/allinone/backup-all/etc/sudoers.d/  /etc/sudoers.d/
+# rsync -av /tmp/allinone/backup-all/var/lib/neutron/  /var/lib/neutron/
+# rsync -av /tmp/allinone/backup-all/var/lib/openvswitch/  /var/lib/openvswitch/
+# rsync -av /tmp/allinone/backup-all/etc/sysconfig/network-scripts/      /etc/sysconfig/network-scripts/
+# rsync -av /tmp/allinone/backup-all/etc/sysconfig/modules/openstack-neutron.modules  /etc/sysconfig/modules/
+# rsync -av /tmp/allinone/backup-all/etc/sysconfig/openstack-neutron   /etc/sysconfig/openstack-neutron</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Restore the neutron database
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># mysql ovs_neutron &lt; /tmp/allinone/backup-all/mysql/ovs_neutron.sql</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Restart the service
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># service neutron-dhcp-agent start
+# service neutron-l3-agent start
+# service neutron-metadata-agent start
+# service neutron-openvswitch-agent start
+# service neutron-ovs-cleanup start
+# service neutron-server start</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Shared files used by neutron<br />
+The following files are not owned by OpenStack RPMs, but they are important to it&#8217;s operation.  Review this list and restore them as needed.  One quick check is to use rsync to determine if the backup files are different from those on the system already:
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>/etc/passwd
+/etc/group
+/etc/shadow
+/etc/gshadow
+/etc/selinux/targeted/modules/active/file_contexts</code></pre>
+</div></div>
+</li>
+</ol></div>
+</div>
+<div class="sect2">
+<h3 id="_example_12_restore_the_nova_service">Example 12: Restore the nova service</h3>
+<div class="paragraph"><p>Assuming that the nova service was previously working and that a backup of it was completed, you can restore the service manually using RPMs and backups:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Stop the nova services
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># service libvirtd stop
+# service openstack-nova-compute stop
+# service openstack-nova-api stop
+# service openstack-nova-scheduler stop
+# service openstack-nova-conductor stop
+# service openstack-nova-consoleauth stop
+# service openstack-nova-novncproxy stop</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Reinstall the nova rpms (optional)
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>yum -y reinstall openstack-nova-common openstack-nova-novncproxy</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Restore nova configuration files from backup
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># rsync -av /tmp/allinone/backup-all/etc/nova/      /etc/nova/
+# rsync -av /tmp/allinone/backup-all/var/lib/nova/  /var/lib/nova/
+# rsync -av /tmp/allinone/backup-all/etc/sysconfig/openstack-nova-novncproxy   /etc/sysconfig/openstack-nova-novncproxy</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Restore the nova database
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># mysql nova &lt; /tmp/allinone/backup-all/mysql/nova.sql</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Restart the service
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># service libvirtd start
+# service openstack-nova-compute start
+# service openstack-nova-api start
+# service openstack-nova-scheduler start
+# service openstack-nova-conductor start
+# service openstack-nova-consoleauth start
+# service openstack-nova-novncproxy start</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Shared files used by nova<br />
+The following files are not owned by OpenStack RPMs, but they are important to it&#8217;s operation.  Review this list and restore them as needed.  One quick check is to use rsync to determine if the backup files are different from those on the system already:
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>/etc/passwd
+/etc/group
+/etc/shadow
+/etc/gshadow
+/etc/selinux/targeted/modules/active/file_contexts</code></pre>
+</div></div>
+</li>
+</ol></div>
+</div>
+<div class="sect2">
+<h3 id="_example_13_restore_the_ceilometer_service">Example 13: Restore the ceilometer service</h3>
+<div class="paragraph"><p>Assuming that the ceilometer service was previously working and that a backup of it was completed, you can restore the service manually using RPMs and backups:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Stop the ceilometer services
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># service openstack-ceilometer-alarm-evaluator stop
+# service openstack-ceilometer-alarm-notifier stop
+# service openstack-ceilometer-api stop
+# service openstack-ceilometer-central stop
+# service openstack-ceilometer-collector stop
+# service openstack-ceilometer-compute stop
+# service mongodb-server stop</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Reinstall the ceilometer rpms (optional)
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>yum -y reinstall *ceilometer* mongodb-server</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Restore ceilometer configuration files from backup
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># rsync -av /tmp/allinone/backup-all/etc/mongodb.conf      /etc
+# rsync -av /tmp/allinone/backup-all/etc/ceilometer/       /etc/ceilometer/
+# rsync -av /tmp/allinone/backup-all/var/lib/ceilometer/   /var/lib/ceilometer/
+# rsync -av /tmp/allinone/backup-all/etc/logrotate.d/mongodb     /etc/logrotate.d/
+# rsync -av /tmp/allinone/backup-all/etc/logrotate.d/openstack-ceilometer     /etc/logrotate.d/</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Restore the ceilometer database (mongodb)<br />
+While the mongod database is down, issue the following restore.
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># mongorestore  --dbpath /var/lib/mongodb/ /tmp/allinone/backup-all/var/lib/mongodb/</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Restart the service
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># service openstack-ceilometer-alarm-evaluator start
+# service openstack-ceilometer-alarm-notifier start
+# service openstack-ceilometer-api start
+# service openstack-ceilometer-central start
+# service openstack-ceilometer-collector start
+# service openstack-ceilometer-compute start
+# service mongodb-server start</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Shared files used by ceilometer<br />
+The following files are not owned by OpenStack RPMs, but they are important to it&#8217;s operation.  Review this list and restore them as needed.  One quick check is to use rsync to determine if the backup files are different from those on the system already:
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>/etc/passwd
+/etc/group
+/etc/shadow
+/etc/gshadow
+/etc/selinux/targeted/modules/active/file_contexts</code></pre>
+</div></div>
+</li>
+</ol></div>
+</div>
+<div class="sect2">
+<h3 id="_example_14_restore_the_horizon_service">Example 14: Restore the horizon service</h3>
+<div class="paragraph"><p>Assuming that the horizon service was previously working and that a backup of it was completed, you can restore the service manually using RPMs and backups:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Stop the web and memcached services
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># service httpd stop
+# service memcached stop</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Reinstall the horizon rpms (optional)
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>yum -y reinstall mod_wsgi httpd mod_ssl openstack-dashboard memcached python-memcached</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Restore horizon configuration files from backup
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># rsync -av /tmp/allinone/backup-all/etc/httpd/conf.d/openstack-dashboard.conf  /etc/httpd/conf.d/openstack-dashboard.conf
+# rsync -av /tmp/allinone/backup-all/etc/openstack-dashboard/      /etc/openstack-dashboard/
+# rsync -av /tmp/allinone/backup-all/etc/sysconfig/httpd           /etc/sysconfig/httpd
+# rsync -av /tmp/allinone/backup-all/etc/sysconfig/memcached       /etc/sysconfig/memcached
+# rsync -av /tmp/allinone/backup-all/var/lib/openstack-dashboard/  /var/lib/openstack-dashboard/</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Restart the service
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code># service httpd start
+# service memcached start</code></pre>
+</div></div>
+</li>
+<li>
+<p>
+Shared files used by horizon<br />
+The following files are not owned by OpenStack RPMs, but they are important to it&#8217;s operation.  Review this list and restore them as needed.  One quick check is to use rsync to determine if the backup files are different from those on the system already:
+</p>
+<div class="listingblock">
+<div class="content">
+<pre><code>/etc/passwd
+/etc/group
+/etc/shadow
+/etc/gshadow
+/etc/selinux/targeted/modules/active/file_contexts</code></pre>
+</div></div>
+</li>
+</ol></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_tenant_backups">Tenant Backups</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Although out of scope for this document, there are features available to allow tenants to create backups of their instances and volumes and more work is being planned.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Ceph, Swift backup driver demonstration
+</p>
+</li>
+<li>
+<p>
+Project Raksha demonstration
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_additional_information">Additional Information</h2>
+<div class="sectionbody">
+<div class="ulist"><ul>
+<li>
+<p>
+<a href="http://openstack.redhat.com/Networking_in_too_much_detail">http://openstack.redhat.com/Networking_in_too_much_detail</a>
+</p>
+</li>
+<li>
+<p>
+<a href="http://dev.mysql.com/">http://dev.mysql.com/</a>
+</p>
+</li>
+<li>
+<p>
+<a href="http://www.zmanda.com/quick-mysql-backup.html">http://www.zmanda.com/quick-mysql-backup.html</a>
+</p>
+</li>
+<li>
+<p>
+<a href="http://mariadb.com/kb/en/backing-up-and-restoring/">http://mariadb.com/kb/en/backing-up-and-restoring/</a>
+</p>
+</li>
+<li>
+<p>
+<a href="http://docs.mongodb.org/manual/core/backups/">http://docs.mongodb.org/manual/core/backups/</a>
+</p>
+</li>
+<li>
+<p>
+<a href="https://access.redhat.com/site/documentation/en-US/Red_Hat_Enterprise_Linux_OpenStack_Platform/4/html/Installation_and_Configuration_Guide/Database_Backup.html">https://access.redhat.com/site/documentation/en-US/Red_Hat_Enterprise_Linux_OpenStack_Platform/4/html/Installation_and_Configuration_Guide/Database_Backup.html</a>
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2014-09-14 12:53:36 CDT
+</div>
+</div>
+</body>
+</html>
